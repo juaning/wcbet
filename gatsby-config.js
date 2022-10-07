@@ -10,6 +10,11 @@ require('ts-node').register({
     module: 'commonjs',
     target: 'es2017',
   },
+});
+
+// This is to access env vars
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
 })
 
 module.exports = {
