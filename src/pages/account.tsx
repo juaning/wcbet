@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import Head from '../components/Head';
 import LogoutButton from "../components/LogoutButton";
+import GroupViewList from "../components/GroupViewList";
 
 const Account = () => {
     const { user } = useAuth0();
@@ -15,6 +16,7 @@ const Account = () => {
             </nav>
             <p>Email: {user?.email}</p>
             <LogoutButton />
+            <GroupViewList />
         </>
 )};
 
