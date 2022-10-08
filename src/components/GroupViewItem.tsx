@@ -2,6 +2,7 @@ import React from 'react';
 import GroupViewItemTeam, { IGroupViewItemTeam } from './GroupViewItemTeam';
 
 export interface IGroupViewItemProps {
+    _id?: string;
     group: string;
     teams: Array<IGroupViewItemTeam["team"]>;
 };

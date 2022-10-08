@@ -19,8 +19,6 @@ export interface IGroupViewItemTeam {
     }
 }
 
-
-
 const TeamRowContainer = styled.div`
     display: grid;
     gap: 1rem;
