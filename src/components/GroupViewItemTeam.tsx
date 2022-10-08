@@ -1,4 +1,7 @@
 import React from 'react';
+import styled from 'styled-components';
+
+import TeamName from './TeamName';
 
 export interface IGroupViewItemTeam {
     team?: {
@@ -16,29 +19,43 @@ export interface IGroupViewItemTeam {
     }
 }
 
+
+
+const TeamRowContainer = styled.div`
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 3fr repeat(8, 1fr);
+    margin: 5px 0;
+    padding: 5px 0;
+    border-bottom: 1px solid #ecedef;
+    font-size: 14px;
+
+    .title {
+        color: #70757a;
+        font-size: 12px;
+    }
+`;
+
 const GroupViewItemTeam = ({ team }: IGroupViewItemTeam) => {
     if (!team) {
         return (
-            <div className='team'>
-                <div className='col'>
-                    <span>Equipo</span>
-                </div>
-                <div className="col"><span>PJ</span></div>
-                <div className="col"><span>G</span></div>
-                <div className="col"><span>E</span></div>
-                <div className="col"><span>P</span></div>
-                <div className="col"><span>GF</span></div>
-                <div className="col"><span>GE</span></div>
-                <div className="col"><span>DG</span></div>
-                <div className="col"><span>Pts</span></div>
-            </div>
+            <TeamRowContainer>
+                <div className='title'><span>Equipo</span></div>
+                <div className="title"><span>PJ</span></div>
+                <div className="title"><span>G</span></div>
+                <div className="title"><span>E</span></div>
+                <div className="title"><span>P</span></div>
+                <div className="title"><span>GF</span></div>
+                <div className="title"><span>GE</span></div>
+                <div className="title"><span>DG</span></div>
+                <div className="title"><span>Pts</span></div>
+            </TeamRowContainer>
         );
     }
     return (
-        <div className='team'>
+        <TeamRowContainer>
             <div className='col'>
-                <img src={team.flag} alt={`Picture of ${team.name_en}`} />
-                <span>{team.name_en}</span>
+                <TeamName flag={team.flag} name={team.name_en} />
             </div>
             <div className="col">{team.mp}</div>
             <div className="col">{team.w}</div>
@@ -48,7 +65,7 @@ const GroupViewItemTeam = ({ team }: IGroupViewItemTeam) => {
             <div className="col">{team.ga}</div>
             <div className="col">{team.gd}</div>
             <div className="col">{team.pts}</div>
-        </div>
+        </TeamRowContainer>
     )
 }
 
