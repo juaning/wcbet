@@ -22,9 +22,5 @@ module.exports = {
   plugins: [
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-styled-components',
-  ],
-  proxy: {
-    prefix: '/api',
-    url: 'http://api.cup2022.ir/api/v1'
-  }
+  ]
 }

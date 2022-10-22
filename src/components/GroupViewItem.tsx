@@ -14,7 +14,7 @@ const GroupViewItem = (props: IGroupViewItemProps) => {
             <GroupViewItemTeam />
             {props.teams.map(team => {
                 return (
-                    <GroupViewItemTeam team={team} />
+                    <GroupViewItemTeam team={team} key={team?.team_id} />
                 )
             })}
         </div>

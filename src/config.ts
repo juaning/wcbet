@@ -1,11 +1,9 @@
-export const cup2022API = 'http://api.cup2022.ir/api/v1';
+export const cup2022API = process.env.GATSBY_MAIN_API || process.env.MAIN_API;
 
-const cup2022Token = process.env.GATSBY_CUP2022_TOKEN || process.env.CUP2022_TOKEN;
-export const cup2022Options = {
+export const cup2022Options: RequestInit = {
     headers: {
-        Authorization: `Bearer ${cup2022Token}`,
+        mode: 'cors',
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
     }
 };
 

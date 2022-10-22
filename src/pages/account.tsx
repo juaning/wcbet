@@ -8,6 +8,7 @@ import GroupViewList from "../components/GroupViewList";
 
 const Account = () => {
     const { user } = useAuth0();
+
     return (
         <>
             <Head title="Account" />
