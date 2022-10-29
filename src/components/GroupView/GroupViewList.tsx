@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
-import { cup2022API, cup2022Options } from '../config';
+import { cup2022API, cup2022Options } from '../../config';
 import GroupViewItem, { IGroupViewItemProps } from './GroupViewItem';
 
 const GroupViewListContainer = styled.div``;
