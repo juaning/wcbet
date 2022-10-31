@@ -50,6 +50,10 @@ const MatchDayList = () => {
 
   if (!matches) return null;
 
+  /**
+   * TODO:
+   * Add logic to colapse passed matchday views
+   */
   return (
     <MatchDayListContainer>
       {Object.keys(matches).map((key: string) => {

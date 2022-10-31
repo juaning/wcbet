@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { DateTime } from 'luxon';
+import { qatarDateTimeFormat, qatarDateTimeZone, localDateTimeFormat } from "../../config";
 import TeamName from "../TeamName";
 
 export interface IMatchDay {
@@ -34,8 +36,16 @@ export interface IMatchDayProps {
 const MatchDayItemContainer = styled.div``;
 
 const MatchDayItem = ({ match }: IMatchDayProps) => {
+  const date = DateTime.fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone);
+  /**
+   * TODO:
+   * Add form to load bets
+   * Add logic to show form if match has not started
+   * Show score if match is started or finished
+   */
   return (
     <MatchDayItemContainer>
+      <h4>Hora: {date.toLocal().toFormat(localDateTimeFormat)}</h4>
       <TeamName flag={match.home_flag} name={match.home_team_en} />
       vs
       <TeamName flag={match.away_flag} name={match.away_team_en} />

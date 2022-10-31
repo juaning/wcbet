@@ -20,4 +20,8 @@ export enum TeamBetTypeEnum {
     ROUND_OF_16,
     GROUP_WINNER,
     GROUP_SECOND,
-  }
+};
+
+export const qatarDateTimeFormat = 'MM/dd/yyyy HH:mm';
+export const qatarDateTimeZone = { zone: 'Asia/Qatar' };
+export const localDateTimeFormat = 'dd/MM/yyyy HH:mm';
