@@ -1,11 +1,23 @@
 import React, {useState, useEffect} from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
-import { cup2022API, cup2022Options } from "../../config";
+import { DateTime } from 'luxon';
+import {
+  cup2022API,
+  cup2022Options,
+  localDateFormat,
+  MatchTimeElapsedEnum,
+  qatarDateTimeFormat,
+  qatarDateTimeZone
+} from "../../config";
 import MatchDayItem, {IMatchDay} from "./MatchDayItem";
 
 export interface IAllMatchDays {
-  [key: string]: Array<IMatchDay>;
+  [key: string]: {
+    matchDate: string;
+    matches: Array<IMatchDay>;
+    isOpen: boolean;
+  }
 }
 
 const MatchDayListContainer = styled.div``;
@@ -29,14 +41,21 @@ const MatchDayList = () => {
         // Group by match day
         const grouped = matches.reduce((matchdays: IAllMatchDays, match: IMatchDay) => {
           if (matchdays[match.matchday]) {
-            matchdays[match.matchday].push(match)
+            matchdays[match.matchday].matches.push(match);
+            matchdays[match.matchday].isOpen = match.time_elapsed !== MatchTimeElapsedEnum.FINISHED;
           } else {
-            matchdays[match.matchday] = [match]
+            matchdays[match.matchday] = {
+              matchDate: DateTime
+                .fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone)
+                .toLocal().toFormat(localDateFormat),
+              matches: [match],
+              isOpen: match.time_elapsed !== MatchTimeElapsedEnum.FINISHED,
+            }
           } return {...matchdays}}, {});
         // Sort by start time
         Object.keys(grouped).map(
           (key: string) => (
-            grouped[key].sort((a: IMatchDay, b: IMatchDay) => (
+            grouped[key].matches.sort((a: IMatchDay, b: IMatchDay) => (
               (new Date(a.local_date)).valueOf() - (new Date(b.local_date)).valueOf()
             ))
           )
@@ -59,8 +78,8 @@ const MatchDayList = () => {
       {Object.keys(matches).map((key: string) => {
         return (
           <>
-            <h3 key={key}>Match Day {key}</h3>
-            {matches[key].map((match: IMatchDay) => (<MatchDayItem match={match} key={match._id} />))}
+            <h3 key={key}>Match Day {key} - {matches[key].matchDate}</h3>
+            {matches[key].matches.map((match: IMatchDay) => (<MatchDayItem match={match} key={match._id} />))}
           </>
         );
       })}

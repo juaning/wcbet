@@ -22,6 +22,12 @@ export enum TeamBetTypeEnum {
     GROUP_SECOND,
 };
 
+export enum MatchTimeElapsedEnum {
+    NOT_STARTED = 'notstarted',
+    FINISHED = 'finished'
+};
+
 export const qatarDateTimeFormat = 'MM/dd/yyyy HH:mm';
 export const qatarDateTimeZone = { zone: 'Asia/Qatar' };
-export const localDateTimeFormat = 'dd/MM/yyyy HH:mm';
+export const localTimeFormat = 'HH:mm';
+export const localDateFormat = 'dd/MM/yyyy';
