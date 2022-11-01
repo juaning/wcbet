@@ -30,7 +30,7 @@ export enum MatchTimeElapsedEnum {
     FINISHED = 'finished'
 };
 
-export const qatarDateTimeFormat = 'MM/dd/yyyy HH:mm';
+export const qatarDateTimeFormat = 'MM/d/yyyy HH:mm';
 export const qatarDateTimeZone = { zone: 'Asia/Qatar' };
 export const localTimeFormat = 'HH:mm';
 export const localDateFormat = 'dd/MM/yyyy';
