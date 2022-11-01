@@ -33,7 +33,16 @@ export interface IMatchDayProps {
   match: IMatchDay;
 }
 
-const MatchDayItemContainer = styled.div``;
+const MatchDayItemContainer = styled.div`
+  border-bottom: 1px solid black;
+  max-width: 800px;
+  padding-bottom: 5px;
+
+  .match-container {
+    display: grid;
+    grid-template-columns: 250px 100px 100px 100px 250px;
+  }
+`;
 
 const MatchDayItem = ({ match }: IMatchDayProps) => {
   const date = DateTime.fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone);
@@ -41,16 +50,20 @@ const MatchDayItem = ({ match }: IMatchDayProps) => {
    * TODO:
    * [ ] Add form to load bets
    * [ ] Add logic to show form if match has not started
-   * [ ] Show score if match is started or finished
+   * [ ] Show score if match has started or finished
    * [ ] Add styles
    * [ ] Fetch bet data from endpoint
    */
   return (
     <MatchDayItemContainer>
       <h4>Hora: {date.toLocal().toFormat(localTimeFormat)}</h4>
-      <TeamName flag={match.home_flag} name={match.home_team_en} />
-      vs
-      <TeamName flag={match.away_flag} name={match.away_team_en} />
+      <div className="match-container">
+        <TeamName flag={match.home_flag} name={match.home_team_en} />
+        <span>{match.home_score}</span>
+        <span>vs</span>
+        <span>{match.away_score}</span>
+        <TeamName flag={match.away_flag} name={match.away_team_en} />
+      </div>
     </MatchDayItemContainer>
   )
 }
