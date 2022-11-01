@@ -43,6 +43,7 @@ const MatchDayItem = ({ match }: IMatchDayProps) => {
    * [ ] Add logic to show form if match has not started
    * [ ] Show score if match is started or finished
    * [ ] Add styles
+   * [ ] Fetch bet data from endpoint
    */
   return (
     <MatchDayItemContainer>

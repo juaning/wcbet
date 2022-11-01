@@ -24,6 +24,9 @@ export enum TeamBetTypeEnum {
 
 export enum MatchTimeElapsedEnum {
     NOT_STARTED = 'notstarted',
+    FIRST_HALF = 'h1',
+    HALF_TIME = 'hf',
+    SECOND_HALF = 'h2',
     FINISHED = 'finished'
 };
 
