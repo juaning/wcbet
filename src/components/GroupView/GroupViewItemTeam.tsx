@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import TeamName from './TeamName';
+import TeamName from '../TeamName';
 
 export interface IGroupViewItemTeam {
     team?: {
