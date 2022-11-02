@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import * as Yup from 'yup';
 import { DateTime } from 'luxon';
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import { qatarDateTimeFormat, qatarDateTimeZone, localTimeFormat } from "../../config";
-import TeamName from "../TeamName";
+import TeamName from "../Helpers/TeamName";
 
 export interface IMatchDay {
     _id: string;
@@ -40,12 +42,11 @@ const MatchDayItemContainer = styled.div`
 
   .match-container {
     display: grid;
-    grid-template-columns: 250px 100px 100px 100px 250px;
+    grid-template-columns: 32% 12% 12% 12% 32%;
   }
 `;
 
 const MatchDayItem = ({ match }: IMatchDayProps) => {
-  const date = DateTime.fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone);
   /**
    * TODO:
    * [ ] Add form to load bets
@@ -54,16 +55,43 @@ const MatchDayItem = ({ match }: IMatchDayProps) => {
    * [ ] Add styles
    * [ ] Fetch bet data from endpoint
    */
+  const date = DateTime.fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone);
+
   return (
     <MatchDayItemContainer>
       <h4>Hora: {date.toLocal().toFormat(localTimeFormat)}</h4>
-      <div className="match-container">
-        <TeamName flag={match.home_flag} name={match.home_team_en} />
-        <span>{match.home_score}</span>
-        <span>vs</span>
-        <span>{match.away_score}</span>
-        <TeamName flag={match.away_flag} name={match.away_team_en} />
-      </div>
+      <Formik
+        initialValues={{
+          homeScore: 0,
+          awayScore: 0
+        }}
+        validationSchema={Yup.object({
+          homeScore: Yup.number()
+            .typeError('Ingrese un numero valido.')
+            .min(0, 'El numero tiene que ser como mínimo 0.')
+            .max(20, 'El máximo número de goles permitidos es 20.'),
+          awayScore: Yup.number()
+            .typeError('Ingrese un numero valido.')
+            .min(0, 'El numero tiene que ser como mínimo 0.')
+            .max(20, 'El máximo número de goles permitidos es 20.'),
+        })}
+        onSubmit={values => {console.log(values)}}
+      >
+        <Form>
+          <div className="match-container">
+            <TeamName flag={match.home_flag} name={match.home_team_en} />
+            <Field name="homeScore" type="number" />
+            <ErrorMessage name="homeScore" />
+            {/* <span>{match.home_score}</span> */}
+            <span>vs</span>
+            <Field name="awayScore" type="number" />
+            <ErrorMessage name="awayScore" />
+            {/* <span>{match.away_score}</span> */}
+            <TeamName flag={match.away_flag} name={match.away_team_en} />
+          </div>
+          <button type="submit">Save</button>
+        </Form>
+      </Formik>
     </MatchDayItemContainer>
   )
 }

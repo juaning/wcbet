@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "gatsby";
-import Head from '../components/Head'
-import LoginButton from '../components/LoginButton';
+import Head from '../components/Helpers/Head'
+import LoginButton from '../components/Helpers/LoginButton';
 
 const Main = () => (
   <>
