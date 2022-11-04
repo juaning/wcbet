@@ -4,6 +4,12 @@ import styled from 'styled-components';
 import { cup2022API, cup2022Options } from '../../config';
 import GroupViewItem, { IGroupViewItemProps } from './GroupViewItem';
 
+/**
+ * TODO:
+ * [ ] Add form to save 1st & 2nd from group
+ * [ ] Fetch team bet values
+ */
+
 const GroupViewListContainer = styled.div``;
 
 const GroupViewList = () => {
@@ -19,7 +25,7 @@ const GroupViewList = () => {
                     Authorization: `Bearer ${token}`
                 }
             };
-            fetch(`${cup2022API}/standings`, fetchOptions)
+            fetch(`${cup2022API}/api-wc2022/standings`, fetchOptions)
             .then((response): Promise<Array<IGroupViewItemProps>> => response.json())
             .then((result: Array<IGroupViewItemProps>) => {
                 setStandings(result);

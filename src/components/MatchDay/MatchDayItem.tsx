@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import * as Yup from 'yup';
 import { DateTime } from 'luxon';
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import { qatarDateTimeFormat, qatarDateTimeZone, localTimeFormat } from "../../config";
+import { useAuth0 } from '@auth0/auth0-react';
+import { qatarDateTimeFormat, qatarDateTimeZone, localTimeFormat, cup2022Options, cup2022API } from "../../config";
 import TeamName from "../Helpers/TeamName";
+import Autosave from "../Helpers/Autosave";
 
 export interface IMatchDay {
     _id: string;
@@ -31,8 +33,15 @@ export interface IMatchDay {
     away_flag: string;
 }
 
+export interface IMatchBet {
+  matchId: string;
+  awayScore: number;
+  homeScore: number;
+}
+
 export interface IMatchDayProps {
   match: IMatchDay;
+  matchBet?: IMatchBet;
 }
 
 const MatchDayItemContainer = styled.div`
@@ -46,7 +55,7 @@ const MatchDayItemContainer = styled.div`
   }
 `;
 
-const MatchDayItem = ({ match }: IMatchDayProps) => {
+const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
   /**
    * TODO:
    * [ ] Add form to load bets
@@ -55,27 +64,65 @@ const MatchDayItem = ({ match }: IMatchDayProps) => {
    * [ ] Add styles
    * [ ] Fetch bet data from endpoint
    */
+  const { getAccessTokenSilently } = useAuth0();
+  const [isCreated, setIsCreated] = useState<boolean>(!!matchBet);
   const date = DateTime.fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone);
+  
+  const saveMatchBet = async (values: IMatchBet, isUpdate: boolean = false) => {
+    const token = await getAccessTokenSilently();
+    const fetchOptions = {
+      ...cup2022Options,
+      method: isUpdate ? 'PUT' : 'POST',
+      headers: {
+        ...cup2022Options.headers,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(values)
+    };
+    const updateUrl = isUpdate ? `/${values.matchId}` : '';
+    return fetch(`${cup2022API}/user-match-bet${updateUrl}`, fetchOptions);
+  }
 
   return (
     <MatchDayItemContainer>
       <h4>Hora: {date.toLocal().toFormat(localTimeFormat)}</h4>
       <Formik
+        enableReinitialize
         initialValues={{
-          homeScore: 0,
-          awayScore: 0
+          homeScore: matchBet ? matchBet.homeScore : 0,
+          awayScore: matchBet ? matchBet.awayScore : 0
         }}
         validationSchema={Yup.object({
           homeScore: Yup.number()
+            .required()
             .typeError('Ingrese un numero valido.')
             .min(0, 'El numero tiene que ser como mínimo 0.')
-            .max(20, 'El máximo número de goles permitidos es 20.'),
+            .max(20, 'El máximo número de goles permitidos es 20.')
+            .integer()
+            .nullable(false),
           awayScore: Yup.number()
+            .required()
             .typeError('Ingrese un numero valido.')
             .min(0, 'El numero tiene que ser como mínimo 0.')
-            .max(20, 'El máximo número de goles permitidos es 20.'),
+            .max(20, 'El máximo número de goles permitidos es 20.')
+            .integer()
+            .nullable(false),
         })}
-        onSubmit={values => {console.log(values)}}
+        onSubmit={async (values, { setSubmitting }) => {
+          const data = { ...values, matchId: match.id };
+          try {
+            if (!isCreated) {     
+              await saveMatchBet(data);
+              setIsCreated(true);
+            } else {
+              await saveMatchBet(data, true);
+            }
+          } catch (error) {
+            console.log(error);
+          } finally {
+            setSubmitting(false);
+          }
+        }}
       >
         <Form>
           <div className="match-container">
@@ -89,7 +136,7 @@ const MatchDayItem = ({ match }: IMatchDayProps) => {
             {/* <span>{match.away_score}</span> */}
             <TeamName flag={match.away_flag} name={match.away_team_en} />
           </div>
-          <button type="submit">Save</button>
+          <Autosave debounceMs={1000} />
         </Form>
       </Formik>
     </MatchDayItemContainer>

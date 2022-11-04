@@ -10,12 +10,16 @@ import {
   qatarDateTimeFormat,
   qatarDateTimeZone
 } from "../../config";
-import MatchDayItem, {IMatchDay} from "./MatchDayItem";
+import MatchDayItem, { IMatchDay, IMatchBet } from "./MatchDayItem";
 
+export interface IMatchAndBet {
+  match: IMatchDay;
+  bet?: IMatchBet;
+}
 export interface IAllMatchDays {
   [key: string]: {
     matchDate: string;
-    matches: Array<IMatchDay>;
+    matches: Array<IMatchAndBet>;
     isOpen: boolean;
   }
 }
@@ -35,35 +39,41 @@ const MatchDayList = () => {
           Authorization: `Bearer ${token}`
         }
       };
-      fetch(`${cup2022API}/matches`, fetchOptions)
-      .then((response): Promise<Array<IMatchDay>> => response.json())
-      .then((matches: Array<IMatchDay>) => {
-        // Group by match day
-        const grouped = matches.reduce((matchdays: IAllMatchDays, match: IMatchDay) => {
-          if (matchdays[match.matchday]) {
-            matchdays[match.matchday].matches.push(match);
-            matchdays[match.matchday].isOpen = match.time_elapsed !== MatchTimeElapsedEnum.FINISHED;
-          } else {
-            matchdays[match.matchday] = {
-              matchDate: DateTime
-                .fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone)
-                .toLocal().toFormat(localDateFormat),
-              matches: [match],
-              isOpen: match.time_elapsed !== MatchTimeElapsedEnum.FINISHED,
-            }
-          } return {...matchdays}}, {});
-        // Sort by start time
-        Object.keys(grouped).map(
-          (key: string) => (
-            grouped[key].matches.sort((a: IMatchDay, b: IMatchDay) => (
-              (new Date(a.local_date)).valueOf() - (new Date(b.local_date)).valueOf()
-            ))
-          )
-        );
-        const sorted =  { ...grouped };
-        setMatches(sorted);
-      })
-      .catch(err => console.error(err));
+
+      const fetchBets = fetch(`${cup2022API}/user-match-bet`, fetchOptions);
+      const fetchMatches = fetch(`${cup2022API}/api-wc2022/matches`, fetchOptions);
+      
+      Promise.all([fetchBets, fetchMatches])
+        .then((results) => Promise.all(results.map(r => r.json())))
+        .then(([matchBets, matches]) => {
+          // Group by match day
+          const grouped = matches.reduce((matchdays: IAllMatchDays, match: IMatchDay) => {
+            // Find bet
+            const bet = matchBets?.find((matchBet: IMatchBet) => matchBet.matchId === match.id);
+            if (matchdays[match.matchday]) {
+              matchdays[match.matchday].matches.push({ match, bet });
+              matchdays[match.matchday].isOpen = match.time_elapsed !== MatchTimeElapsedEnum.FINISHED;
+            } else {
+              matchdays[match.matchday] = {
+                matchDate: DateTime
+                  .fromFormat(match.local_date, qatarDateTimeFormat, qatarDateTimeZone)
+                  .toLocal().toFormat(localDateFormat),
+                matches: [{match, bet}],
+                isOpen: match.time_elapsed !== MatchTimeElapsedEnum.FINISHED,
+              }
+            } return {...matchdays}}, {});
+          // Sort by start time
+          Object.keys(grouped).map(
+            (key: string) => (
+              grouped[key].matches.sort((a: IMatchAndBet, b: IMatchAndBet) => (
+                (new Date(a.match.local_date)).valueOf() - (new Date(b.match.local_date)).valueOf()
+              ))
+            )
+          );
+          const sorted =  { ...grouped };
+          setMatches(sorted);
+        })
+        .catch(err => console.error(err));
     })
   }, []);
 
@@ -79,7 +89,12 @@ const MatchDayList = () => {
         return (
           <>
             <h3 key={key}>Match Day {key} - {matches[key].matchDate}</h3>
-            {matches[key].matches.map((match: IMatchDay) => (<MatchDayItem match={match} key={match._id} />))}
+            {matches[key].matches.map((matchAndBet: IMatchAndBet) => (
+              <MatchDayItem
+                key={matchAndBet.match._id}
+                match={matchAndBet.match}
+                matchBet={matchAndBet.bet}
+              />))}
           </>
         );
       })}
