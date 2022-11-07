@@ -13,6 +13,7 @@ const MainContainer = styled.div`
 display: grid;
 grid-template-columns: 40% 60%;
 gap: 2rem;
+font-family: "Open Sans";
 `;
 
 const Account = () => {

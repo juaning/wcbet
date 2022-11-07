@@ -88,10 +88,10 @@ const MatchDayList = () => {
       {Object.keys(matches).map((key: string) => {
         return (
           <>
-            <h3 key={key}>Match Day {key} - {matches[key].matchDate}</h3>
+            <h3 key={`match-day-${key}`}>Match Day {key} - {matches[key].matchDate}</h3>
             {matches[key].matches.map((matchAndBet: IMatchAndBet) => (
               <MatchDayItem
-                key={matchAndBet.match._id}
+                key={`match-${matchAndBet.match.id}`}
                 match={matchAndBet.match}
                 matchBet={matchAndBet.bet}
               />))}
