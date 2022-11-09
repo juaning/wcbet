@@ -18,6 +18,15 @@ import {
 import Team from "./Team"
 import Autosave from "../Helpers/Autosave"
 
+export enum MatchTypeEnum {
+  GROUP = 'group',
+  ROUND_OF_16 = 'R16',
+  QUARTERFINAL = 'QR',
+  THIRD_PLACE = '3RD',
+  SEMIFINAL = 'SF',
+  FINAL = 'FIN',
+}
+
 export interface IMatchDay {
   _id: string
   away_score: number
@@ -34,7 +43,7 @@ export interface IMatchDay {
   persian_date: string
   stadium_id: string
   time_elapsed: string
-  type: string
+  type: MatchTypeEnum
   home_team_fa: string
   away_team_fa: string
   home_team_en: string

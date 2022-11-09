@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
+import { isEmpty } from 'lodash';
 import { cup2022API, cup2022Options } from '../../config';
 import GroupViewItem, { IGroupViewItemProps } from './GroupViewItem';
 
@@ -34,7 +35,7 @@ const GroupViewList = () => {
         });
     }, []);
 
-    if (!standings) {
+    if (!standings || isEmpty(standings)) {
         return (
             <GroupViewListContainer>
                 No standings at the moment

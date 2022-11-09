@@ -8,6 +8,7 @@ import Head from '../components/Helpers/Head';
 import LogoutButton from "../components/Helpers/LogoutButton";
 import MatchDayList from '../components/MatchDay/MatchDayList';
 import GroupViewList from "../components/GroupView/GroupViewList";
+import Champion from "../components/Helpers/Champion";
 
 const MainContainer = styled.div`
 display: grid;
@@ -27,6 +28,7 @@ const Account = () => {
             </nav>
             <p>Email: {user?.email}</p>
             <LogoutButton />
+            <Champion />
             <MainContainer>
                 <MatchDayList />
                 <GroupViewList />

@@ -11,6 +11,7 @@ import {
   qatarDateTimeZone
 } from "../../config";
 import MatchDayItem, { IMatchDay, IMatchBet } from "./MatchDayItem";
+import { isEmpty } from "lodash";
 
 export interface IMatchAndBet {
   match: IMatchDay;
@@ -46,6 +47,7 @@ const MatchDayList = () => {
       Promise.all([fetchBets, fetchMatches])
         .then((results) => Promise.all(results.map(r => r.json())))
         .then(([matchBets, matches]) => {
+          if (isEmpty(matches)) return;
           // Group by match day
           const grouped = matches.reduce((matchdays: IAllMatchDays, match: IMatchDay) => {
             // Find bet

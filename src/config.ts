@@ -7,6 +7,11 @@ export const transformDateTimeToLocal = (datetime: string) =>
     qatarDateTimeZone,
   ).toLocal();
 
+export const hasWCStarted = (): boolean => {
+    const now = DateTime.now().toLocal();
+    return now >= wcStartDateTime;
+  }
+
 export const cup2022API = process.env.GATSBY_MAIN_API || process.env.MAIN_API;
 
 export const cup2022Options: RequestInit = {
