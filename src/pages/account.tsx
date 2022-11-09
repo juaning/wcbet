@@ -1,11 +1,10 @@
 import React from "react";
-import { Link } from 'gatsby';
 import { useAuth0 } from "@auth0/auth0-react";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { Container } from "@mui/material";
 import styled from 'styled-components';
 import Head from '../components/Helpers/Head';
-import LogoutButton from "../components/Helpers/LogoutButton";
+import ResponsiveAppBar from "../components/BarMenu/BarMenu";
 import MatchDayList from '../components/MatchDay/MatchDayList';
 import GroupViewList from "../components/GroupView/GroupViewList";
 import Champion from "../components/Helpers/Champion";
@@ -18,16 +17,12 @@ font-family: "Open Sans";
 `;
 
 const Account = () => {
-    const { user } = useAuth0();
+    const { user, logout } = useAuth0();
 
     return (
         <Container>
             <Head title="Account" />
-            <nav>
-                <Link to="/">Home</Link>
-            </nav>
-            <p>Email: {user?.email}</p>
-            <LogoutButton />
+            <ResponsiveAppBar user={user} logout={logout} />
             <Champion />
             <MainContainer>
                 <MatchDayList />
