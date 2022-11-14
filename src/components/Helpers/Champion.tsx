@@ -21,6 +21,8 @@ export interface ITeamBet {
   id?: string;
   teamId: string;
   instance: TeamBetTypeEnum;
+  groupId?: string | null;
+  matchId?: string | null;
 }
 
 const ChampionReadOnlyContainer = styled.h2`
@@ -113,7 +115,7 @@ const Champion = () => {
       onSubmit={async (values, { setSubmitting}) => {
         const data: ITeamBet = {
           teamId: values.champion ? values.champion.id : '',
-          instance: TeamBetTypeEnum.CHAMPION
+          instance: TeamBetTypeEnum.CHAMPION,
         }
         try {
           if (!champion || !champion.id) {

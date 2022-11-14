@@ -11,8 +11,8 @@ import Champion from "../components/Helpers/Champion";
 
 const MainContainer = styled.div`
 display: grid;
-grid-template-columns: 40% 60%;
-gap: 2rem;
+grid-template-columns: 38% 58%;
+gap: 4%;
 font-family: "Open Sans";
 `;
 
