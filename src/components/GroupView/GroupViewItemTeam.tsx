@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { LooksOneOutlined, LooksTwoOutlined } from '@mui/icons-material';
+import { TeamBetTypeEnum } from '../../config';
 
-import TeamName from '../TeamName';
+import TeamName from '../Helpers/TeamName';
 
 export interface IGroupViewItemTeam {
     team?: {
@@ -16,7 +18,8 @@ export interface IGroupViewItemTeam {
         d: string;
         name_en: string;
         flag: string;
-    }
+    };
+    position?: TeamBetTypeEnum;
 }
 
 const TeamRowContainer = styled.div`
@@ -34,7 +37,7 @@ const TeamRowContainer = styled.div`
     }
 `;
 
-const GroupViewItemTeam = ({ team }: IGroupViewItemTeam) => {
+const GroupViewItemTeam = ({ team, position }: IGroupViewItemTeam) => {
     if (!team) {
         return (
             <TeamRowContainer>
@@ -50,10 +53,16 @@ const GroupViewItemTeam = ({ team }: IGroupViewItemTeam) => {
             </TeamRowContainer>
         );
     }
+    let badge;
+    if (position && position === TeamBetTypeEnum.GROUP_WINNER) {
+        badge = <LooksOneOutlined />;
+    } else if (position && position === TeamBetTypeEnum.GROUP_SECOND) {
+        badge = <LooksTwoOutlined />;
+    }
     return (
         <TeamRowContainer>
             <div className='col'>
-                <TeamName flag={team.flag} name={team.name_en} />
+                <TeamName flag={team.flag} name={team.name_en} badge={badge} />
             </div>
             <div className="col">{team.mp}</div>
             <div className="col">{team.w}</div>

@@ -1,3 +1,17 @@
+import { DateTime } from 'luxon';
+
+export const transformDateTimeToLocal = (datetime: string) =>
+  DateTime.fromFormat(
+    datetime,
+    qatarDateTimeFormat,
+    qatarDateTimeZone,
+  ).toLocal();
+
+export const hasWCStarted = (): boolean => {
+    const now = DateTime.now().toLocal();
+    return now >= wcStartDateTime;
+  }
+
 export const cup2022API = process.env.GATSBY_MAIN_API || process.env.MAIN_API;
 
 export const cup2022Options: RequestInit = {
@@ -34,3 +48,4 @@ export const qatarDateTimeFormat = 'MM/d/yyyy HH:mm';
 export const qatarDateTimeZone = { zone: 'Asia/Qatar' };
 export const localTimeFormat = 'HH:mm';
 export const localDateFormat = 'dd/MM/yyyy';
+export const wcStartDateTime = transformDateTimeToLocal('11/20/2022 19:00');
