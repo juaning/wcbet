@@ -1,19 +1,22 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import MenuItem from '@mui/material/MenuItem';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
+import { navigate } from 'gatsby';
 
 export interface IResponsiveAppBarProps {
   user?: object;
-  logout: any;
+  login?: any;
+  logout?: any;
 }
 
-function ResponsiveAppBar({ user, logout }: IResponsiveAppBarProps) {
+function ResponsiveAppBar({ user, logout, login }: IResponsiveAppBarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -24,9 +27,17 @@ function ResponsiveAppBar({ user, logout }: IResponsiveAppBarProps) {
     setAnchorEl(null);
   };
 
+  const execLogin = () => {
+    login({ authorizationParams: { redirect_uri: '/account' } });
+  }
+
   const execLogout = () => {
     logout({ returnTo: window.location.origin });
     handleClose();
+  }
+
+  const navigateToAccount = () => {
+    navigate('/account');
   }
 
   return (
@@ -44,7 +55,7 @@ function ResponsiveAppBar({ user, logout }: IResponsiveAppBarProps) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           PYKARE
         </Typography>
-        {user && (
+        {user ? (
           <div>
             <IconButton
               size="large"
@@ -71,9 +82,12 @@ function ResponsiveAppBar({ user, logout }: IResponsiveAppBarProps) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              <MenuItem onClick={navigateToAccount}>Mi cuenta</MenuItem>
               <MenuItem onClick={execLogout}>Salir</MenuItem>
             </Menu>
           </div>
+        ) : (
+          <Button color="inherit" onClick={execLogin}>Login</Button>
         )}
       </Toolbar>
     </AppBar>
