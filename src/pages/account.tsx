@@ -10,9 +10,10 @@ import GroupViewList from "../components/GroupView/GroupViewList";
 import Champion from "../components/Helpers/Champion";
 
 const MainContainer = styled.div`
-max-width: 640px;
 margin: auto;
 font-family: "Open Sans";
+overflow-y: hidden;
+overflow-x: scroll;
 `;
 
 const Account = () => {

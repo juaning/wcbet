@@ -25,7 +25,10 @@ export interface IAllMatchDays {
   }
 }
 
-const MatchDayListContainer = styled.div``;
+const MatchDayListContainer = styled.div`
+max-width: 640px;
+margin: auto;
+`;
 
 const MatchDayList = () => {
   const [matches, setMatches] = useState<IAllMatchDays>();
