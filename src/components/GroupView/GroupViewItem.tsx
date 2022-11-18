@@ -26,6 +26,7 @@ const GroupViewContainer = styled.div`
     border: 1px solid rgba(0, 0, 0, 0.23);
     padding: 8px;
     margin-bottom: 12px;
+    min-width: 640px;
 
     &.active:hover {
         border: 1px solid rgba(0, 0, 0, 0.87);
