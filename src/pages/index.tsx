@@ -5,7 +5,6 @@ import {
   Container,
   ImageList,
   ImageListItem,
-  ImageListItemBar,
   ListSubheader,
   Typography,
   Table,
@@ -18,6 +17,7 @@ import Head from '../components/Helpers/Head'
 import ResponsiveAppBar from "../components/BarMenu/BarMenu";
 import itau from '../../static/itau-qr.jpg';
 import mango from '../../static/mango-qr.jpg';
+import { Link } from "gatsby";
 
 const pointsRows = [
   { desc: 'Acierto de ganador o empate primera ronda', pts: 10 },
@@ -38,8 +38,8 @@ const pointsRows = [
 ];
 
 const qrs = [
-  { img: itau, title: 'itau' },
-  { img: mango, title: 'mango' },
+  { img: itau, title: 'ITAU', subtitle: 'Escanea con la app de Itau Pagos' },
+  { img: mango, title: 'MANGO (@roquito07)', subtitle: 'Escanea con la app de Mango' },
 ]
 
 const Main = () => {
@@ -53,13 +53,13 @@ const Main = () => {
       user={isAuthenticated ? user : undefined}
     />
     <Box sx={{ width: '100%', maxWidth: 640, margin: 'auto' }}>
-      <Typography variant="h4" gutterBottom>Reglamento</Typography>
+      <Typography variant="h4" gutterBottom>Reglamento | <Link to="/account">Mis apuestas</Link></Typography>
       <Typography variant="h6" gutterBottom sx={{fontWeight: 'bold'}}>1. Costo</Typography>
       <Typography variant="body1" gutterBottom>
         El jugador que desea participar deberá abonar la suma de 100.000 Gs para apostar partido a partido durante todo el mundial. Adicionalmente puede apostar por el campeón antes de iniciar el mundial con un costo de 50.000 Gs.
         <ImageList>
           <ImageListItem key="Subheader" cols={2}>
-            <ListSubheader component="div">Medios de pago</ListSubheader>
+            <ListSubheader component="div">Medios de pago.</ListSubheader>
           </ImageListItem>
           {qrs.map(qr => (
             <ImageListItem key={qr.title}>
@@ -68,11 +68,10 @@ const Main = () => {
                 srcSet={`${qr.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
                 alt={qr.title}
                 loading="lazy"
+                style={{ objectFit: 'fill'}}
               />
-              <ImageListItemBar
-                title={qr.title}
-                sx={{ textAlign: 'right', color: 'orange !important', fontWeight: 'bold' }}
-              />
+              <Typography variant="subtitle1" align="right" gutterBottom sx={{fontWeight: 'bold'}}>{qr.title}</Typography>
+              <Typography variant="body1" align="right" gutterBottom>{qr.subtitle}</Typography>
             </ImageListItem>
           ))}
         </ImageList>
