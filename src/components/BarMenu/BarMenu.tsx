@@ -36,6 +36,10 @@ function ResponsiveAppBar({ user, logout, login }: IResponsiveAppBarProps) {
     handleClose();
   }
 
+  const navigateToHome = () => {
+    navigate('/');
+  }
+
   const navigateToAccount = () => {
     navigate('/account');
   }
@@ -52,7 +56,7 @@ function ResponsiveAppBar({ user, logout, login }: IResponsiveAppBarProps) {
         >
           <EmojiEvents sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={navigateToHome}>
           PYKARE
         </Typography>
         {user ? (
@@ -82,6 +86,7 @@ function ResponsiveAppBar({ user, logout, login }: IResponsiveAppBarProps) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              <MenuItem onClick={navigateToHome}>Reglamento</MenuItem>
               <MenuItem onClick={navigateToAccount}>Mi cuenta</MenuItem>
               <MenuItem onClick={execLogout}>Salir</MenuItem>
             </Menu>
