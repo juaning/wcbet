@@ -24,12 +24,9 @@ const pointsRows = [
   { desc: 'Resultado primera ronda', pts: 20 },
   { desc: 'Clasificado a octavos de final en su posición.', pts: 60 },
   { desc: 'Clasificado a octavos de final fuera de su posición.', pts: 40 },
-  { desc: 'Clasificado a cuartos de final en su posición.', pts: 100 },
-  { desc: 'Clasificado a cuartos de final fuera de su posición.', pts: 60 },
-  { desc: 'Clasificado a semifinal  en su posición.', pts: 140 },
-  { desc: 'Clasificado a semifinal fuera de su posición.', pts: 80 },
-  { desc: 'Clasificado a la final en su posición.', pts: 180 },
-  { desc: 'Clasificado a la final fuera de su posición.', pts: 100 },
+  { desc: 'Clasificado a cuartos de final.', pts: 100 },
+  { desc: 'Clasificado a semifinal.', pts: 140 },
+  { desc: 'Clasificado a la final.', pts: 180 },
   { desc: 'Campeón', pts: 250 },
   { desc: 'Resultado en octavos de final', pts: 100 },
   { desc: 'Resultado en cuartos de final', pts: 150 },
@@ -95,8 +92,6 @@ const Main = () => {
       <Typography variant="body1" gutterBottom>
         <Typography sx={{ textDecoration: 'underline' }}>Equipo clasificado en su posición.</Typography><br />
         El jugador obtendrá 100 puntos por adivinar la clasificación de un equipo en la misma posición en que clasifico en el mundial. Ejemplo: si Brasil clasifica como 1º de su grupo y llega a cuartos de final y usted apostó que alcanzaría cuartos de final obtiene 100 puntos.<br />
-        <br /><Typography sx={{ textDecoration: 'underline' }}>Equipo clasificado fuera de su posición.</Typography><br />
-        El jugador obtiene 60 puntos por adivinar la clasificación de un equipo en una posición distinta a la del mundial. Ejemplo: Si Brasil clasifica como segundo y alcanza los cuartos de final y usted apostó que clasificaría primero y alcanzaría los cuartos de final obtiene 60 puntos.<br />
         <br /><Typography sx={{ textDecoration: 'underline' }}>Resultado</Typography><br />
         Deberá anotar el resultado de cada emparejamiento de cuartos de final teniendo en cuenta solamente los 90 minutos de juego del partido sin alargue. En caso de apostar empate deberá seleccionar el clasificado a la siguiente ronda. La planilla completará en base a los resultados automáticamente los clasificados a semifinal.<br /><br />
         El jugador obtiene 150 puntos extras solamente si adivina ambos clasificados de un determinado partido en su posición y además adivina el resultado del partido.
@@ -105,8 +100,6 @@ const Main = () => {
       <Typography variant="body1" gutterBottom>
         <Typography sx={{ textDecoration: 'underline' }}>Equipo clasificado en su posición.</Typography><br />
         El jugador obtendrá 140 puntos por adivinar la clasificación de un equipo en la misma posición en que clasifico en el mundial. Ejemplo: si Brasil clasifica como 1º de su grupo y llega a semifinal y usted apostó que alcanzaría la semifinal obtiene 140 puntos.<br />
-        <br /><Typography sx={{ textDecoration: 'underline' }}>Equipo clasificado fuera de su posición.</Typography><br />
-        El jugador obtiene 80 puntos por adivinar la clasificación de un equipo en una posición distinta a la del mundial. Ejemplo: Si Brasil clasifica como segundo y alcanza la semifinal y usted apostó que clasificaría primero y alcanzaría la semifinal obtiene 80 puntos.<br />
         <br /><Typography sx={{ textDecoration: 'underline' }}>Resultado</Typography><br />
         Deberá anotar el resultado de cada emparejamiento de semifinales teniendo en cuenta solamente los 90 minutos de juego del partido sin alargue. En caso de apostar empate deberá seleccionar el clasificado a la siguiente ronda. La planilla completará en base a los resultados automáticamente los clasificados a semifinal.<br /><br />
         El jugador obtiene 200 puntos extras solamente si adivina ambos clasificados de un determinado partido en su posición y además adivina el resultado del partido.
@@ -115,8 +108,6 @@ const Main = () => {
       <Typography variant="body1" gutterBottom>
         <Typography sx={{ textDecoration: 'underline' }}>Equipo clasificado en su posición.</Typography><br />
         El jugador obtendrá 180 puntos por adivinar la clasificación de un equipo en la misma posición en que clasifico en el mundial. Ejemplo: si Brasil clasifica como 1º de su grupo y llega a la final y usted apostó que alcanzaría la final obtiene 180 puntos.<br />
-        <br /><Typography sx={{ textDecoration: 'underline' }}>Equipo clasificado fuera de su posición.</Typography><br />
-        El jugador obtiene 100 puntos por adivinar la clasificación de un equipo en una posición distinta a la del mundial. Ejemplo: Si Brasil clasifica como segundo y alcanza la final y usted apostó que clasificaría primero y alcanzaría la final obtiene 100 puntos.<br />
         <br /><Typography sx={{ textDecoration: 'underline' }}>Resultado</Typography><br />
         Deberá anotar el resultado del enfrentamiento de la final teniendo en cuenta solamente los 90 minutos de juego sin alargue. En caso de apostar empate deberá seleccionar el campeón. La planilla completará en base a los resultados automáticamente el campeón.<br /><br />
         El jugador obtiene 250 puntos extras solamente si adivina ambos clasificados a la final en su posición y además adivina el resultado del partido.

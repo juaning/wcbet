@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import { isEmpty } from 'lodash';
-import { cup2022API, cup2022Options } from '../../config';
+import { cup2022API, cup2022Options, hasWCStarted } from '../../config';
 import GroupViewItem, { IGroupViewItem } from './GroupViewItem';
 import { ITeamBet } from '../Helpers/Champion';
+import { Typography } from '@mui/material';
 
 /**
  * TODO:
@@ -65,6 +66,11 @@ const GroupViewList = () => {
 
     return (
         <GroupViewListContainer>
+            {!hasWCStarted() && (
+                <Typography variant='body1' gutterBottom>
+                    Hacé click en el grupo para elegir al ganador y al segundo.
+                </Typography>
+            )}
             {standings?.map(standing => <GroupViewItem
                 group={standing}
                 key={standing.group._id}
