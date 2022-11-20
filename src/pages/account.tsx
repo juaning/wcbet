@@ -1,7 +1,7 @@
 import React, {useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
-import { Container, Tabs, Tab } from "@mui/material";
+import { Container, Tabs, Tab, Alert, Stack } from "@mui/material";
 import styled from 'styled-components';
 import Head from '../components/Helpers/Head';
 import ResponsiveAppBar from "../components/BarMenu/BarMenu";
@@ -28,6 +28,9 @@ const Account = () => {
         <Container>
             <Head title="Account" />
             <ResponsiveAppBar user={user} logout={logout} />
+            <Stack sx={{ width: '100%' }} spacing={2}>
+                <Alert severity="error">El campeón y  el primero y segundo de cada grupo pueden elegirse hast antes del inicio del campeonato mundial</Alert>
+            </Stack>
             <Champion />
             <Tabs value={activeTab} onChange={handleTabChange} centered>
                 <Tab label="Partidos" />

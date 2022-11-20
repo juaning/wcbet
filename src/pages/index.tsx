@@ -11,13 +11,14 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell
+  TableCell,
 } from "@mui/material";
 import Head from '../components/Helpers/Head'
 import ResponsiveAppBar from "../components/BarMenu/BarMenu";
 import itau from '../../static/itau-qr.jpg';
 import mango from '../../static/mango-qr.jpg';
 import { Link } from "gatsby";
+import ChampNGroupsBetNotification from "../components/Notification/Notification";
 
 const pointsRows = [
   { desc: 'Acierto de ganador o empate primera ronda', pts: 10 },
@@ -49,6 +50,7 @@ const Main = () => {
       logout={isAuthenticated ? logout : undefined}
       user={isAuthenticated ? user : undefined}
     />
+    <ChampNGroupsBetNotification />
     <Box sx={{ width: '100%', maxWidth: 640, margin: 'auto' }}>
       <Typography variant="h4" gutterBottom>Reglamento | <Link to="/account">Mis apuestas</Link></Typography>
       <Typography variant="h6" gutterBottom sx={{fontWeight: 'bold'}}>1. Costo</Typography>
