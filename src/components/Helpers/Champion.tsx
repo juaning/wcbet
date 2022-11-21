@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Form, Formik, Field } from "formik";
 import { Autocomplete, AutocompleteRenderInputParams, TextField } from "formik-mui";
 import { useAuth0 } from "@auth0/auth0-react";
-import { cup2022API, cup2022Options, TeamBetTypeEnum, hasWCStarted } from '../../config'; 
+import { cup2022API, cup2022Options, TeamBetTypeEnum, canBetChamNGroups } from '../../config'; 
 import Autosave from "./Autosave";
 
 export interface ITeam {
@@ -95,7 +95,7 @@ const Champion = () => {
     })
   }, []);
 
-  if (hasWCStarted()) {
+  if (canBetChamNGroups()) {
     if (champion && champion.flag) {
       return (
         <ChampionReadOnlyContainer>

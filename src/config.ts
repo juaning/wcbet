@@ -8,9 +8,15 @@ export const transformDateTimeToLocal = (datetime: string) =>
   ).toLocal();
 
 export const hasWCStarted = (): boolean => {
-    const now = DateTime.now().toLocal();
-    return now >= wcStartDateTime;
-  }
+  const now = DateTime.now().toLocal();
+  return now >= wcStartDateTime;
+}
+
+export const canBetChamNGroups = (): boolean => {
+  const now = DateTime.now().toLocal();
+  const endOf1stRound = transformDateTimeToLocal('11/25/2022 15:00');
+  return now >= endOf1stRound;
+}
 
 export const cup2022API = process.env.GATSBY_MAIN_API || process.env.MAIN_API;
 
