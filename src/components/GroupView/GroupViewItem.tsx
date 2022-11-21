@@ -2,7 +2,7 @@ import React, { SyntheticEvent, useState } from 'react';
 import styled from 'styled-components';
 import GroupViewItemTeam, { IGroupViewItemTeam } from './GroupViewItemTeam';
 import FormDialog from './GroupWinnersModal';
-import { hasWCStarted, TeamBetTypeEnum } from '../../config';
+import { canBetChamNGroups, TeamBetTypeEnum } from '../../config';
 import { IGroupViewData } from './GroupViewList';
 import { ITeamBet } from '../Helpers/Champion';
 
@@ -42,7 +42,7 @@ const GroupViewItem = ({ group }: IGroupViewItemProps) => {
     });
     const [groupBets, setGroupBets] = useState<Array<ITeamBet>>(group.bets);
     const onGroupClick = () => {
-        if (hasWCStarted()) return;
+        if (canBetChamNGroups()) return;
         setModalOpen(true);
     }
     const handleClose = (event: SyntheticEvent) => {
@@ -51,7 +51,7 @@ const GroupViewItem = ({ group }: IGroupViewItemProps) => {
     };
 
     return (
-        <GroupViewContainer onClick={onGroupClick} className={hasWCStarted() ? '' : 'active'}>
+        <GroupViewContainer onClick={onGroupClick} className={canBetChamNGroups() ? '' : 'active'}>
             <FormDialog
                 open={open}
                 handleClose={handleClose}
