@@ -65,7 +65,9 @@ const GroupViewItem = ({ group }: IGroupViewItemProps) => {
             />
             <h3>Group {group.group.group}</h3>
             <GroupViewItemTeam />
-            {group.group.teams.map(team => {
+            {group.group.teams
+            .sort((a, b) => Number(b?.pts) - Number(a?.pts))
+            .map(team => {
                 let position;
                 if (team?.team_id === groupWinners.winner) {
                     position = TeamBetTypeEnum.GROUP_WINNER;
