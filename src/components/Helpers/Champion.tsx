@@ -117,6 +117,10 @@ const Champion = () => {
           teamId: values.champion ? values.champion.id : '',
           instance: TeamBetTypeEnum.CHAMPION,
         }
+        if (data.teamId === '') {
+          setSubmitting(false);
+          return;
+        }
         try {
           if (!champion || !champion.id) {
             const newChamp: ITeamBet = await saveTeamBet(data);
