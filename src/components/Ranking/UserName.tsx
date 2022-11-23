@@ -10,11 +10,14 @@ interface ITeamName {
 
 const TeamNameContainer = styled.div`
     display: grid;
-    grid-template-columns: 7% 8% 12% 57%;
-    gap: 5%;
+    grid-template-columns: 5% 12% 12% 62%;
+    gap: 2.5%;
     img {
         width: 25px;
         margin: auto;
+    }
+    span {
+      padding-left: 6px;
     }
 `;
 
