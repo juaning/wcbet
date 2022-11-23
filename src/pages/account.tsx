@@ -9,6 +9,7 @@ import MatchDayList from '../components/MatchDay/MatchDayList';
 import GroupViewList from "../components/GroupView/GroupViewList";
 import Champion from "../components/Helpers/Champion";
 import ChampNGroupsBetNotification from "../components/Notification/Notification";
+import Ranking from '../components/Ranking/Ranking';
 
 const MainContainer = styled.div`
 margin: auto;
@@ -39,7 +40,7 @@ const Account = () => {
             <MainContainer>
                 {activeTab === 0 && <MatchDayList />}
                 {activeTab === 1 && <GroupViewList />}
-                {activeTab === 2 && <div>Ranking</div>}
+                {activeTab === 2 && <Ranking />}
             </MainContainer>
         </Container>
 )};
