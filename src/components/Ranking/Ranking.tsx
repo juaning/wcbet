@@ -49,6 +49,7 @@ const Ranking = () => {
       .catch(err => console.error(err));
   }, []);
   let lastPoints = 0;
+  let lastIndex = 1;
   return (
     <TableContainer component={Paper}>
       <Table aria-label="customized table">
@@ -63,6 +64,7 @@ const Ranking = () => {
             let printPosition = false;
             if (lastPoints !== user.pts) {
               lastPoints = user.pts;
+              lastIndex = index + 1;
               printPosition = true;
             }
             return (
@@ -71,8 +73,8 @@ const Ranking = () => {
                 <UserName
                   flag={user.championFlag}
                   name={user.name}
-                  position={printPosition ? index + 1 : undefined}
-                  badge={!user.paid ? undefined : <CreditCardOffOutlined color='warning' />}
+                  position={printPosition ? index + 1 : lastIndex}
+                  badge={user.paid ? undefined : <CreditCardOffOutlined color='warning' />}
                 />
               </StyledTableCell>
               <StyledTableCell align="right">{user.pts}</StyledTableCell>
