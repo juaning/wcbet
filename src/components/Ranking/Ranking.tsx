@@ -73,7 +73,7 @@ const Ranking = () => {
                 <UserName
                   flag={user.championFlag}
                   name={user.name}
-                  position={printPosition ? index + 1 : lastIndex}
+                  position={printPosition ? index + 1 : undefined}
                   badge={user.paid ? undefined : <CreditCardOffOutlined color='warning' />}
                 />
               </StyledTableCell>
