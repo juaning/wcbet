@@ -24,7 +24,7 @@ const TeamNameContainer = styled.div`
 const UserName = ({flag, name, badge, position}: ITeamName) => (
     <TeamNameContainer>
         {position}
-        {badge}
+        {badge ? badge : <span />}
         <img src={flag} alt={`Picture of ${name}`} />
         <span>{name}</span>
     </TeamNameContainer>
