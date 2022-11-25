@@ -13,19 +13,13 @@ import {
   localTimeFormat,
   cup2022Options,
   cup2022API,
+  MatchTypeEnum,
+  MatchTimeElapsedEnum,
+  points,
   transformDateTimeToLocal
 } from "../../config"
 import Team from "./Team"
 import Autosave from "../Helpers/Autosave"
-
-export enum MatchTypeEnum {
-  GROUP = 'group',
-  ROUND_OF_16 = 'R16',
-  QUARTERFINAL = 'QR',
-  THIRD_PLACE = '3RD',
-  SEMIFINAL = 'SF',
-  FINAL = 'FIN',
-}
 
 export interface IMatchDay {
   _id: string
@@ -77,6 +71,16 @@ const MatchDayItemContainer = styled.div`
     margin: 0; 
   }
 
+  .title {
+    display: grid;
+    grid-template-columns: 70% 30%;
+
+    .points {
+      color: green;
+      text-align: right;
+    }
+  }
+
   .result-values {
     font-size: larger;
     font-weight: bold;
@@ -106,9 +110,9 @@ const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
   /**
    * TODO:
    * [x] Add form to load bets
-   * [ ] Add logic to show form if match has not started
-   * [ ] Show score if match has started or finished
-   * [ ] Add styles
+   * [x] Add logic to show form if match has not started
+   * [x] Show score if match has started or finished
+   * [x] Add styles
    * [x] Fetch bet data from endpoint
    */
   const { getAccessTokenSilently } = useAuth0()
@@ -134,95 +138,129 @@ const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
     return fetch(`${cup2022API}/user-match-bet${updateUrl}`, fetchOptions)
   }
 
+  const calculateMatchPoints = (match: IMatchDay, bet: IMatchBet): number | undefined => {
+    if (
+      match &&
+      (match.time_elapsed === MatchTimeElapsedEnum.FINISHED ||
+        match.finished === 'TRUE')
+    ) {
+      let newPts = 0;
+      // Calculate who won
+      const awayWon =
+        match.away_score > match.home_score && bet.awayScore > bet.homeScore;
+      const homeWon =
+        match.away_score < match.home_score && bet.awayScore < bet.homeScore;
+      const draw =
+        match.away_score === match.home_score &&
+        bet.awayScore === bet.homeScore;
+      if (awayWon || homeWon || draw) {
+        newPts += points[match.type].winOrDraw;
+      }
+      // Calculate result points
+      const resultMatches =
+        match.away_score === bet.awayScore &&
+        match.home_score === bet.homeScore;
+      if (resultMatches) {
+        newPts += points[match.type].result;
+      }
+      return newPts;
+    }
+    return;
+  }
+
   const now = DateTime.now().toLocal();
   const matchDateTime = transformDateTimeToLocal(match.local_date);
 
   const isBetLock = now >= matchDateTime;
+  const wonPts = matchBet ? calculateMatchPoints(match, matchBet) : undefined;
 
   return (
-    <MatchDayItemContainer>
-      <h4>Hora: {date.toLocal().toFormat(localTimeFormat)}</h4>
-      <Formik
-        enableReinitialize
-        initialValues={{
-          homeScore: matchBet ? matchBet.homeScore : 0,
-          awayScore: matchBet ? matchBet.awayScore : 0,
-        }}
-        validationSchema={Yup.object({
-          homeScore: Yup.number()
-            .required('Goles de local es requerido.')
-            .typeError("Ingrese un numero valido.")
-            .min(0, "El numero tiene que ser como mínimo 0.")
-            .max(20, "El máximo número de goles permitidos es 20.")
-            .integer()
-            .nullable(false),
-          awayScore: Yup.number()
-            .required('Goles de visitante es requerido.')
-            .typeError("Ingrese un numero valido.")
-            .min(0, "El numero tiene que ser como mínimo 0.")
-            .max(20, "El máximo número de goles permitidos es 20.")
-            .integer()
-            .nullable(false),
-        })}
-        onSubmit={async (values, { setSubmitting }) => {
-          const data = { ...values, matchId: match.id }
-          try {
-            if (!isCreated) {
-              await saveMatchBet(data)
-              setIsCreated(true)
-            } else {
-              await saveMatchBet(data, true)
+      <MatchDayItemContainer>
+        <div className="title">
+          <h4>Hora: {date.toLocal().toFormat(localTimeFormat)}</h4>
+          {wonPts !== undefined && <h4 className="points">{`${wonPts > 0 ? '+ ' : ''}${wonPts}`}</h4>}
+        </div>
+        <Formik
+          enableReinitialize
+          initialValues={{
+            homeScore: matchBet ? matchBet.homeScore : 0,
+            awayScore: matchBet ? matchBet.awayScore : 0,
+          }}
+          validationSchema={Yup.object({
+            homeScore: Yup.number()
+              .required('Goles de local es requerido.')
+              .typeError("Ingrese un numero valido.")
+              .min(0, "El numero tiene que ser como mínimo 0.")
+              .max(20, "El máximo número de goles permitidos es 20.")
+              .integer()
+              .nullable(false),
+            awayScore: Yup.number()
+              .required('Goles de visitante es requerido.')
+              .typeError("Ingrese un numero valido.")
+              .min(0, "El numero tiene que ser como mínimo 0.")
+              .max(20, "El máximo número de goles permitidos es 20.")
+              .integer()
+              .nullable(false),
+          })}
+          onSubmit={async (values, { setSubmitting }) => {
+            const data = { ...values, matchId: match.id }
+            try {
+              if (!isCreated) {
+                await saveMatchBet(data)
+                setIsCreated(true)
+              } else {
+                await saveMatchBet(data, true)
+              }
+            } catch (error) {
+              console.log(error)
+            } finally {
+              setSubmitting(false)
             }
-          } catch (error) {
-            console.log(error)
-          } finally {
-            setSubmitting(false)
-          }
-        }}
-      >
-        <Form>
-          <div className="match-container">
-            <Team flag={match.home_flag} name={match.home_team_en} />
-            <span className="result-values">{match.home_score}</span>
-            <span className="result-values">vs</span>
-            <span className="result-values">{match.away_score}</span>
-            <Team flag={match.away_flag} name={match.away_team_en} />
-          </div>
-          <div className="bet-values">Tu apuesta</div>
-          <div className="match-bet-container">
-            <Field
-              name="homeScore"
-              type="number"
-              component={TextField}
-              inputProps={{style: {textAlign: 'center'}}}
-              InputProps={{
-                readOnly: isBetLock,
-                startAdornment: (
-                  <InputAdornment position="end">
-                    <SportsSoccer />
-                  </InputAdornment>
-                )
-              }}
-            />
-            <Field
-              name="awayScore"
-              type="number"
-              component={TextField}
-              inputProps={{style: {textAlign: 'center'}}}
-              InputProps={{
-                readOnly: isBetLock,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SportsSoccer />
-                  </InputAdornment>
-                )
-              }}
-            />
-          </div>
-          <Autosave debounceMs={1000} />
-        </Form>
-      </Formik>
-    </MatchDayItemContainer>
+          }}
+        >
+          <Form>
+            <div className="match-container">
+              <Team flag={match.home_flag} name={match.home_team_en} />
+              <span className="result-values">{match.home_score}</span>
+              <span className="result-values">vs</span>
+              <span className="result-values">{match.away_score}</span>
+              <Team flag={match.away_flag} name={match.away_team_en} />
+            </div>
+            <div className="bet-values">Tu apuesta</div>
+            <div className="match-bet-container">
+              <Field
+                name="homeScore"
+                type="number"
+                component={TextField}
+                inputProps={{style: {textAlign: 'center'}}}
+                InputProps={{
+                  readOnly: isBetLock,
+                  startAdornment: (
+                    <InputAdornment position="end">
+                      <SportsSoccer />
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <Field
+                name="awayScore"
+                type="number"
+                component={TextField}
+                inputProps={{style: {textAlign: 'center'}}}
+                InputProps={{
+                  readOnly: isBetLock,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <SportsSoccer />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </div>
+            <Autosave debounceMs={1000} />
+          </Form>
+        </Formik>
+      </MatchDayItemContainer>
   )
 }
 
