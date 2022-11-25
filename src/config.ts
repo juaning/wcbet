@@ -42,6 +42,16 @@ export enum TeamBetTypeEnum {
     GROUP_SECOND,
 };
 
+export enum MatchTypeEnum {
+  GROUP = 'group',
+  ROUND_OF_16 = 'R16',
+  QUARTERFINAL = 'QR',
+  THIRD_PLACE = '3RD',
+  SEMIFINAL = 'SF',
+  FINAL = 'FIN',
+  CHAMPION = 'CHAMPION',
+}
+
 export enum MatchTimeElapsedEnum {
     NOT_STARTED = 'notstarted',
     FIRST_HALF = 'h1',
@@ -55,3 +65,43 @@ export const qatarDateTimeZone = { zone: 'Asia/Qatar' };
 export const localTimeFormat = 'HH:mm';
 export const localDateFormat = 'dd/MM/yyyy';
 export const wcStartDateTime = transformDateTimeToLocal('11/20/2022 19:00');
+export type IPoints = {
+  [key in MatchTypeEnum]: {
+    winOrDraw: number;
+    result: number;
+    advances?: number;
+    advancesAsSecond?: number;
+  };
+}
+export const points: IPoints = {
+  [MatchTypeEnum.GROUP]: {
+    winOrDraw: 10,
+    result: 20,
+    advances: 60,
+    advancesAsSecond: 40,
+  },
+  [MatchTypeEnum.ROUND_OF_16]: {
+    winOrDraw: 100,
+    result: 100,
+  },
+  [MatchTypeEnum.QUARTERFINAL]: {
+    winOrDraw: 150,
+    result: 140,
+  },
+  [MatchTypeEnum.SEMIFINAL]: {
+    winOrDraw: 200,
+    result: 180,
+  },
+  [MatchTypeEnum.THIRD_PLACE]: {
+    winOrDraw: 200,
+    result: 180, 
+  },
+  [MatchTypeEnum.FINAL]: {
+    winOrDraw: 250,
+    result: 250,
+  },
+  [MatchTypeEnum.CHAMPION]: {
+    winOrDraw: 0,
+    result: 270,
+  }
+};
