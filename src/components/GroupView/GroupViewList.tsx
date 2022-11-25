@@ -6,6 +6,7 @@ import { cup2022API, cup2022Options } from '../../config';
 import GroupViewItem, { IGroupViewItem } from './GroupViewItem';
 import { ITeamBet } from '../Helpers/Champion';
 import { GroupsBetsInfo } from '../Notification/Notification';
+import Loader from '../Loader/Loader';
 
 /**
  * TODO:
@@ -57,11 +58,7 @@ const GroupViewList = () => {
     }, []);
 
     if (!standings || isEmpty(standings)) {
-        return (
-            <GroupViewListContainer>
-                No standings at the moment
-            </GroupViewListContainer>
-        );
+        return <Loader />;
     }
 
     return (

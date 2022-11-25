@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import { cup2022API, cup2022Options } from '../../config';
 import UserName from './UserName';
 import { CreditCardOffOutlined } from '@mui/icons-material';
+import Loader from '../Loader/Loader';
 
 export interface UserItem {
   pts: number;
@@ -50,6 +51,9 @@ const Ranking = () => {
   }, []);
   let lastPoints = 0;
   let lastIndex = 1;
+  if (!users || users.length < 1) {
+    return <Loader />;
+  }
   return (
     <TableContainer component={Paper}>
       <Table aria-label="customized table">
