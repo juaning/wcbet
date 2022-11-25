@@ -17,6 +17,7 @@ import { isEmpty } from "lodash";
 import { Collapse } from "@mui/material";
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Loader from "../Loader/Loader";
 
 export interface IMatchAndBet {
   match: IMatchDay;
@@ -126,7 +127,9 @@ const MatchDayList = () => {
     })
   }, []);
 
-  if (!matches) return null;
+  if (!matches) {
+    return <Loader />
+  }
 
   return (
     <MatchDayListContainer>
