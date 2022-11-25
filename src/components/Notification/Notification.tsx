@@ -7,7 +7,7 @@ const ChampNGroupsBetNotification = () => {
   return (
     <Stack sx={{ width: '100%', marginBottom: '16px;' }} spacing={2}>
         <Alert severity="error">
-          El campeón y  el primero y segundo de cada grupo pueden elegirse hasta después del último partido de la primera fecha. <Typography variant='body1' sx={{ fontWeight: 'bold'}}>Irán v Gales 25/11/2022 9:00 hrs.</Typography>
+          El campeón y  el primero y segundo de cada grupo pueden elegirse hasta antes del inicio del primer partido de la segunda fecha. <Typography variant='body1' sx={{ fontWeight: 'bold'}}>Irán v Gales 25/11/2022 7:00 hrs.</Typography>
         </Alert>
     </Stack>
   )

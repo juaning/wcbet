@@ -14,7 +14,7 @@ export const hasWCStarted = (): boolean => {
 
 export const canBetChamNGroups = (): boolean => {
   const now = DateTime.now().toLocal();
-  const endOf1stRound = transformDateTimeToLocal('11/25/2022 15:00');
+  const endOf1stRound = transformDateTimeToLocal('11/25/2022 13:00');
   return now >= endOf1stRound;
 }
 
