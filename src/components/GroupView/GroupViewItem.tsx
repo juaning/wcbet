@@ -2,9 +2,18 @@ import React, { SyntheticEvent, useState } from 'react';
 import styled from 'styled-components';
 import GroupViewItemTeam, { IGroupViewItemTeam } from './GroupViewItemTeam';
 import FormDialog from './GroupWinnersModal';
-import { canBetChamNGroups, TeamBetTypeEnum } from '../../config';
+import {
+    canBetChamNGroups,
+    TeamBetTypeEnum,
+    lastMatchDateTimePerGroup,
+    transformDateTimeToLocal,
+    TGroups,
+    points,
+    MatchTypeEnum
+} from '../../config';
 import { IGroupViewData } from './GroupViewList';
 import { ITeamBet } from '../Helpers/Champion';
+import { DateTime } from 'luxon';
 
 export interface IGroupViewItem {
     _id?: string;
@@ -32,6 +41,16 @@ const GroupViewContainer = styled.div`
         border: 1px solid rgba(0, 0, 0, 0.87);
         cursor: pointer;
     }
+
+    .title {
+        display: grid;
+        grid-template-columns: 70% 30%;
+
+        .points {
+        color: green;
+        text-align: right;
+        }
+    }
 `
 
 const GroupViewItem = ({ group }: IGroupViewItemProps) => {
@@ -49,6 +68,31 @@ const GroupViewItem = ({ group }: IGroupViewItemProps) => {
         event.stopPropagation();
         setModalOpen(false);
     };
+    const calculatePts = (teams: Array<IGroupViewItemTeam["team"]>): number => {
+        let pts = 0;
+        if (teams[0]?.team_id === groupWinners.winner) {
+            pts += points[MatchTypeEnum.GROUP].advances || 0;
+        }
+        if (teams[1]?.team_id === groupWinners.second) {
+            pts += points[MatchTypeEnum.GROUP].advances || 0;
+        }
+        if (teams[0]?.team_id === groupWinners.second) {
+            pts += points[MatchTypeEnum.GROUP].advancesAsSecond || 0;
+        }
+        if (teams[1]?.team_id === groupWinners.winner) {
+            pts += points[MatchTypeEnum.GROUP].advancesAsSecond || 0;
+        }
+        return pts;
+    }
+    const groupName = group.group.group as TGroups;
+    const now = DateTime.now().toLocal();
+    const lastGameDT = transformDateTimeToLocal(lastMatchDateTimePerGroup[groupName]);
+    const isGroupDefined = now >= lastGameDT;
+    const hasBet = groupWinners.winner !== '' || groupWinners.second !== '';
+    const teamsList = group.group.teams
+        .sort((a, b) => Number(b?.pts) - Number(a?.pts))
+
+    const wonPts = isGroupDefined && hasBet ? calculatePts(teamsList) : undefined;
 
     return (
         <GroupViewContainer onClick={onGroupClick} className={canBetChamNGroups() ? '' : 'active'}>
@@ -63,11 +107,12 @@ const GroupViewItem = ({ group }: IGroupViewItemProps) => {
                 setGroupWinners={setGroupWinners}
                 setGroupBets={setGroupBets}
             />
-            <h3>Group {group.group.group}</h3>
+            <div className='title'>
+                <h3>Group {group.group.group}</h3>
+                {wonPts !== undefined && <h3 className='points'>{`${wonPts > 0 ? '+ ' : ''}${wonPts}`}</h3>}
+            </div>
             <GroupViewItemTeam />
-            {group.group.teams
-            .sort((a, b) => Number(b?.pts) - Number(a?.pts))
-            .map(team => {
+            {teamsList.map(team => {
                 let position;
                 if (team?.team_id === groupWinners.winner) {
                     position = TeamBetTypeEnum.GROUP_WINNER;
