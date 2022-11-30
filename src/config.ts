@@ -105,3 +105,19 @@ export const points: IPoints = {
     result: 270,
   }
 };
+
+export type TGroups = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H';
+export type TLastMatchDTPerGroup = {
+  [key in TGroups]: string;
+}
+
+export const lastMatchDateTimePerGroup: TLastMatchDTPerGroup = {
+  A: '11/29/2022 20:10',
+  B: '11/30/2022 00:10',
+  C: '12/1/2022 00:10',
+  D: '11/30/2022 20:10',
+  E: '12/2/2022 00:10',
+  F: '12/1/2022 20:10',
+  G: '12/3/2022 00:10',
+  H: '12/2/2022 20:10',
+};

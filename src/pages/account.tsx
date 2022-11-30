@@ -22,7 +22,7 @@ const Account = () => {
     const { user, logout } = useAuth0();
     const [activeTab, setActiveTab] = useState<number>(0);
 
-    const handleTabChange = (event: React.SyntheticEvent, newTab: number) => {
+    const handleTabChange = (_event: React.SyntheticEvent, newTab: number) => {
         setActiveTab(newTab);
     }
 
