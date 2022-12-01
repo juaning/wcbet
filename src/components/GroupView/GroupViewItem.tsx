@@ -90,7 +90,13 @@ const GroupViewItem = ({ group }: IGroupViewItemProps) => {
     const isGroupDefined = now >= lastGameDT;
     const hasBet = groupWinners.winner !== '' || groupWinners.second !== '';
     const teamsList = group.group.teams
-        .sort((a, b) => Number(b?.pts) - Number(a?.pts))
+        .sort((a, b) => {
+            const diff = Number(b?.pts) - Number(a?.pts);
+            if (diff === 0) {
+                return Number(b?.gd) - Number(a?.gd);
+            }
+            return diff;
+        })
 
     const wonPts = isGroupDefined && hasBet ? calculatePts(teamsList) : undefined;
 
