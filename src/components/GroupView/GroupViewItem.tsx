@@ -93,7 +93,11 @@ const GroupViewItem = ({ group }: IGroupViewItemProps) => {
         .sort((a, b) => {
             const diff = Number(b?.pts) - Number(a?.pts);
             if (diff === 0) {
-                return Number(b?.gd) - Number(a?.gd);
+                const goalDiff = Number(b?.gd) - Number(a?.gd);
+                if (goalDiff === 0) {
+                return Number(b?.gf) - Number(a?.gf);
+                }
+                return goalDiff;
             }
             return diff;
         })
