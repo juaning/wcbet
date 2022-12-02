@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { fifaFlag } from "../../config";
 
 interface ITeamProps {
   flag: string;
@@ -24,7 +25,7 @@ span {
 
 const Team = ({ flag, name }: ITeamProps) => (
   <TeamContainer>
-    <img src={flag} alt={`Flag of ${name}`} />
+    <img src={flag && flag.length > 0 ? flag : fifaFlag} alt={`Flag of ${name}`} />
     <span>{name}</span>
   </TeamContainer>
 );
