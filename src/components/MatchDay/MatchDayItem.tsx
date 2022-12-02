@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import * as Yup from "yup"
 import { DateTime } from "luxon"
@@ -19,7 +19,9 @@ import {
   transformDateTimeToLocal
 } from "../../config"
 import Team from "./Team"
+import Knockout from "./Knockout";
 import Autosave from "../Helpers/Autosave"
+import { ITeamBet } from '../Helpers/Champion';
 
 export interface IMatchDay {
   _id: string
@@ -107,21 +109,32 @@ const MatchDayItemContainer = styled.div`
 `;
 
 const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
-  /**
-   * TODO:
-   * [x] Add form to load bets
-   * [x] Add logic to show form if match has not started
-   * [x] Show score if match has started or finished
-   * [x] Add styles
-   * [x] Fetch bet data from endpoint
-   */
-  const { getAccessTokenSilently } = useAuth0()
-  const [isCreated, setIsCreated] = useState<boolean>(!!matchBet)
+  const { getAccessTokenSilently } = useAuth0();
+  const [isCreated, setIsCreated] = useState<boolean>(!!matchBet);
+  const [knockoutBet, setKnockoutBet] = useState<ITeamBet>();
   const date = DateTime.fromFormat(
     match.local_date,
     qatarDateTimeFormat,
     qatarDateTimeZone
-  )
+  );
+
+  useEffect(() => {
+    getAccessTokenSilently().then(async token => {
+      const fetchOptions = {
+        ...cup2022Options,
+        headers: {
+          ...cup2022Options.headers,
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      const response = await fetch(`${cup2022API}/user-team-bet/match/${match.id}`, fetchOptions);
+      const bet = await response.json();
+      if (bet) {
+        setKnockoutBet(bet);
+      }
+    })
+  }, []);
 
   const saveMatchBet = async (values: IMatchBet, isUpdate: boolean = false) => {
     const token = await getAccessTokenSilently()
@@ -163,6 +176,16 @@ const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
       if (resultMatches) {
         newPts += points[match.type].result;
       }
+
+      // Calculate knockout stage points
+      if (knockoutBet && knockoutBet.matchId) {
+        const awayAdvances = awayWon && match.away_team_id === knockoutBet.teamId;
+        const homeAdvances = homeWon && match.home_team_id === knockoutBet.teamId;
+        if (awayAdvances || homeAdvances) {
+          newPts += (points[match.type].advances || 0);
+        }
+      }
+
       return newPts;
     }
     return;
@@ -260,6 +283,13 @@ const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
             <Autosave debounceMs={1000} />
           </Form>
         </Formik>
+        {match.type !== MatchTypeEnum.GROUP
+          && <Knockout
+            isBetLock={isBetLock}
+            match={match}
+            knockoutBet={knockoutBet}
+            setKnockoutBet={setKnockoutBet}
+          />}
       </MatchDayItemContainer>
   )
 }
