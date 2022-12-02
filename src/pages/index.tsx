@@ -29,9 +29,15 @@ const pointsRows = [
   { desc: 'Clasificado a semifinal.', pts: 140 },
   { desc: 'Clasificado a la final.', pts: 180 },
   { desc: 'Campeón', pts: 250 },
+  { desc: 'Acierto de ganador o empate en octavos de final', pts: 60 },
   { desc: 'Resultado en octavos de final', pts: 100 },
+  { desc: 'Acierto de ganador o empate en cuartos de final', pts: 100 },
   { desc: 'Resultado en cuartos de final', pts: 150 },
+  { desc: 'Acierto de ganador o empate en semifinal', pts: 140 },
   { desc: 'Resultado en semifinal', pts: 200 },
+  { desc: 'Acierto de ganador o empate en tercer puesto', pts: 140 },
+  { desc: 'Resultado en tercer puesto', pts: 200 },
+  { desc: 'Acierto de ganador o empate en la final', pts: 100 },
   { desc: 'Resultado en la final', pts: 250 },
 ];
 
