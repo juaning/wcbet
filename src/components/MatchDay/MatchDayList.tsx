@@ -34,13 +34,6 @@ export interface IAllMatchDays {
   }
 }
 
-// export type TStageGroup = {
-//   [key: string]: {
-//     matchDays: IAllMatchDays;
-//     stageTitle: string;
-//   }
-// }
-
 export type TStageGroup = {
   [key in MatchTypeEnum]?: {
     matchDays: IAllMatchDays;

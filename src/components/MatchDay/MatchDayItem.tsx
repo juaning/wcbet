@@ -179,8 +179,9 @@ const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
 
       // Calculate knockout stage points
       if (knockoutBet && knockoutBet.matchId) {
-        const awayAdvances = awayWon && match.away_team_id === knockoutBet.teamId;
-        const homeAdvances = homeWon && match.home_team_id === knockoutBet.teamId;
+        const goalDiff = match.away_score - match.home_score;
+        const awayAdvances = goalDiff > 0 && match.away_team_id === knockoutBet.teamId;
+        const homeAdvances = goalDiff < 0 && match.home_team_id === knockoutBet.teamId;
         if (awayAdvances || homeAdvances) {
           newPts += (points[match.type].advances || 0);
         }
