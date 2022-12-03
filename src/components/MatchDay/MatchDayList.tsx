@@ -3,17 +3,19 @@ import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
 import { styled as styledMUI } from '@mui/material/styles';
 import { DateTime } from 'luxon';
+import isEmpty from 'lodash/isEmpty';
 import {
   cup2022API,
   cup2022Options,
   localDateFormat,
   MatchTimeElapsedEnum,
+  MatchTypeEnum,
   qatarDateTimeFormat,
   qatarDateTimeZone,
-  transformDateTimeToLocal
+  StageTitle,
+  transformDateTimeToLocal,
 } from "../../config";
 import MatchDayItem, { IMatchDay, IMatchBet } from "./MatchDayItem";
-import { isEmpty } from "lodash";
 import { Collapse } from "@mui/material";
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -28,6 +30,21 @@ export interface IAllMatchDays {
     matchDate: string;
     matches: Array<IMatchAndBet>;
     isOpen: boolean;
+    stage: MatchTypeEnum;
+  }
+}
+
+// export type TStageGroup = {
+//   [key: string]: {
+//     matchDays: IAllMatchDays;
+//     stageTitle: string;
+//   }
+// }
+
+export type TStageGroup = {
+  [key in MatchTypeEnum]?: {
+    matchDays: IAllMatchDays;
+    stageTitle: string;
   }
 }
 
@@ -37,6 +54,10 @@ interface ExpandMoreProps extends IconButtonProps {
 
 interface IExpandItem {
   [key: string]: boolean;
+}
+
+type TExpandStage = {
+  [key in MatchTypeEnum]?: boolean
 }
 
 const ExpandMore = styledMUI((props: ExpandMoreProps) => {
@@ -61,13 +82,19 @@ const CollapsableTitle = styled.div`
 `
 
 const MatchDayList = () => {
-  const [matches, setMatches] = useState<IAllMatchDays>();
+  const [stages, setStages] = useState<TStageGroup>();
   const [expanded, setExpanded] = useState<IExpandItem>({});
+  const [stageExpanded, setStageExpanded] = useState<TExpandStage>({});
   const { getAccessTokenSilently } = useAuth0();
 
   const handleExpandClick = (id: string) => {
     const newExpanded = { ...expanded, [id]: !expanded[id] };
     setExpanded(newExpanded);
+  }
+
+  const handleStageExpandClick = (id: MatchTypeEnum) => {
+    const newExpanded = { ...stageExpanded, [id]: !stageExpanded[id] };
+    setStageExpanded(newExpanded);
   }
 
   useEffect(() => {
@@ -89,7 +116,6 @@ const MatchDayList = () => {
         .then(([matchBets, matches]) => {
           if (isEmpty(matches)) return;
           // Group by match day
-          
           const grouped = matches.reduce((matchdays: IAllMatchDays, match: IMatchDay) => {
             // Find bet
             const bet = matchBets?.find((matchBet: IMatchBet) => matchBet.matchId === match.id);
@@ -103,6 +129,7 @@ const MatchDayList = () => {
                   .toLocal().toFormat(localDateFormat),
                 matches: [{match, bet}],
                 isOpen: match.time_elapsed !== MatchTimeElapsedEnum.FINISHED,
+                stage: match.type,
               }
             } return {...matchdays}}, {});
           // Sort by start time
@@ -120,40 +147,71 @@ const MatchDayList = () => {
             )}
           );
           const sorted =  { ...grouped };
+          // Group by stage
+          const stage: TStageGroup = {};
+          const stageExpandList: TExpandStage = {};
+          Object.keys(sorted).forEach((key: string): void => {
+            const instance: MatchTypeEnum = sorted[key].stage;
+            stage[instance] = {
+              stageTitle: StageTitle[instance],
+              matchDays: {
+                ...(stage[instance]?.matchDays),
+                [key]: sorted[key]
+              }
+            };
+            stageExpandList[instance] = DateTime.now().startOf('day') <= DateTime.fromFormat(sorted[key].matchDate, localDateFormat);
+          });
           setExpanded(expandList);
-          setMatches(sorted);
+          setStageExpanded(stageExpandList);
+          setStages(stage);
         })
         .catch(err => console.error(err));
     })
   }, []);
 
-  if (!matches) {
+  if (!stages) {
     return <Loader />
   }
 
   return (
     <MatchDayListContainer>
-      {Object.keys(matches).map((key: string) => {
+      {Object.keys(stages).map((key: string) => {
         return (
-          <div key={`match-day-${key}`}>
-            <CollapsableTitle onClick={() => handleExpandClick(key)}>
-              <h3>Match Day {key} - {matches[key].matchDate}</h3>
+          <div key={`stage-${key}`}>
+            <CollapsableTitle onClick={() => handleStageExpandClick(key as MatchTypeEnum)}>
+              <h2>{stages[key as MatchTypeEnum]?.stageTitle}</h2>
               <ExpandMore
-                expand={expanded[key]}
-                aria-expanded={expanded[key]}
+                expand={!!stageExpanded[key as MatchTypeEnum]}
+                aria-expanded={stageExpanded[key as MatchTypeEnum]}
                 aria-label="show more"
               >
                 <ExpandMoreIcon />
               </ExpandMore>
             </CollapsableTitle>
-            <Collapse in={expanded[key]}  timeout="auto" unmountOnExit>
-              {matches[key].matches.map((matchAndBet: IMatchAndBet) => (
-                <MatchDayItem
-                  key={`match-${matchAndBet.match.id}`}
-                  match={matchAndBet.match}
-                  matchBet={matchAndBet.bet}
-                />))}
-              </Collapse>
+            <Collapse in={stageExpanded[key as MatchTypeEnum]}  timeout="auto" unmountOnExit>
+              {Object.keys(stages[key as MatchTypeEnum]?.matchDays ?? {}).map((mdKey: string) => (
+                <div key={`match-day-${mdKey}`}>
+                  <CollapsableTitle onClick={() => handleExpandClick(mdKey)}>
+                    <h3>Match Day {mdKey} - {stages[key as MatchTypeEnum]?.matchDays[mdKey].matchDate}</h3>
+                    <ExpandMore
+                      expand={expanded[mdKey]}
+                      aria-expanded={expanded[mdKey]}
+                      aria-label="show more"
+                    >
+                      <ExpandMoreIcon />
+                    </ExpandMore>
+                  </CollapsableTitle>
+                  <Collapse in={expanded[mdKey]}  timeout="auto" unmountOnExit>
+                    {stages[key as MatchTypeEnum]?.matchDays[mdKey].matches.map((matchAndBet: IMatchAndBet) => (
+                      <MatchDayItem
+                        key={`match-${matchAndBet.match.id}`}
+                        match={matchAndBet.match}
+                        matchBet={matchAndBet.bet}
+                      />))}
+                  </Collapse>
+                </div>
+              ))}
+            </Collapse>
           </div>
         );
       })}

@@ -61,6 +61,21 @@ export enum MatchTimeElapsedEnum {
     FINISHED = 'finished'
 };
 
+export type TStageTitle = {
+  [key in MatchTypeEnum]: string;
+}
+
+export const StageTitle: TStageTitle = {
+  [MatchTypeEnum.GROUP]: 'Grupos',
+  [MatchTypeEnum.ROUND_OF_16]: 'Octavos de final',
+  [MatchTypeEnum.QUARTERFINAL]: 'Cuartos de final',
+  [MatchTypeEnum.SEMIFINAL]: 'Semifinales',
+  [MatchTypeEnum.THIRD_PLACE]: 'Tercer puesto',
+  [MatchTypeEnum.FINAL]: 'Final',
+  [MatchTypeEnum.CHAMPION]: 'Campeon'
+
+}
+
 export const qatarDateTimeFormat = 'MM/d/yyyy HH:mm';
 export const qatarDateTimeZone = { zone: 'Asia/Qatar' };
 export const localTimeFormat = 'HH:mm';
