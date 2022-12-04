@@ -105,13 +105,13 @@ const Knockout = ({ isBetLock, match, knockoutBet, setKnockoutBet }: IKnockoutPr
                 control={<Radio disabled={isSubmitting || isBetLock} />}
                 label={match.home_team_en}
                 labelPlacement="start"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isBetLock}
               />
               <FormControlLabel
                 value={match.away_team_id}
                 control={<Radio disabled={isSubmitting || isBetLock} />}
                 label={match.away_team_en}
-                disabled={isSubmitting}
+                disabled={isSubmitting || isBetLock}
               />
             </Field>
             <Autosave debounceMs={1000} />
