@@ -144,3 +144,9 @@ export const lastMatchDateTimePerGroup: TLastMatchDTPerGroup = {
 };
 
 export const fifaFlag = 'https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_FIFA.svg';
+
+export enum MatchDefinedEnum {
+  REGULAR = 'regular',
+  EXTRA_TIME = 'extra',
+  PENALTIES = 'penalties',
+}

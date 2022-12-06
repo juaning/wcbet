@@ -16,7 +16,8 @@ import {
   MatchTypeEnum,
   MatchTimeElapsedEnum,
   points,
-  transformDateTimeToLocal
+  transformDateTimeToLocal,
+  MatchDefinedEnum
 } from "../../config"
 import Team from "./Team"
 import Knockout from "./Knockout";
@@ -26,14 +27,19 @@ import { ITeamBet } from '../Helpers/Champion';
 export interface IMatchDay {
   _id: string
   away_score: number
+  away_extra_time_score?: number
+  away_penalties_score?: number
   away_scorers: string[]
   away_team_id: string
   finished: string
   group: string
   home_score: number
+  home_extra_time_score?: number
+  home_penalties_score?: number
   home_scorers: string[]
   home_team_id: string
   id: string
+  matchDefined?: MatchDefinedEnum 
   local_date: string
   matchday: string
   persian_date: string
@@ -58,6 +64,26 @@ export interface IMatchDayProps {
   match: IMatchDay
   matchBet?: IMatchBet
 }
+
+const ExtraScoreContainer = styled.div`
+  justify-content: center;
+  display: grid;
+  grid-template-columns: 25% 25% 25%;
+  span {
+    margin: auto;
+  }
+
+`
+
+const ExtraResult = styled.span`
+font-size: small;
+color: gray;
+`;
+
+const DefinedAfterRegTime = styled.div`
+display: flex;
+justify-content: center;
+`;
 
 const MatchDayItemContainer = styled.div`
   border-bottom: 1px solid black;
@@ -179,7 +205,20 @@ const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
 
       // Calculate knockout stage points
       if (knockoutBet && knockoutBet.matchId) {
-        const goalDiff = match.away_score - match.home_score;
+        let goalDiff = 0;
+        switch (match.matchDefined) {
+          case MatchDefinedEnum.EXTRA_TIME:
+            goalDiff =
+              (match.away_extra_time_score || 0) - (match.home_extra_time_score || 0);
+            break;
+          case MatchDefinedEnum.PENALTIES:
+            goalDiff =
+              (match.away_penalties_score || 0) - (match.home_penalties_score || 0);
+            break;
+          case MatchDefinedEnum.REGULAR:
+          default:
+            goalDiff = match.away_score - match.home_score;
+        }
         const awayAdvances = goalDiff > 0 && match.away_team_id === knockoutBet.teamId;
         const homeAdvances = goalDiff < 0 && match.home_team_id === knockoutBet.teamId;
         if (awayAdvances || homeAdvances) {
@@ -250,6 +289,24 @@ const MatchDayItem = ({ match, matchBet }: IMatchDayProps) => {
               <span className="result-values">{match.away_score}</span>
               <Team flag={match.away_flag} name={match.away_team_en} />
             </div>
+            <DefinedAfterRegTime>
+                {match.matchDefined === MatchDefinedEnum.EXTRA_TIME && (<ExtraResult >
+                  <ExtraScoreContainer>
+                    <span>{match.home_extra_time_score}</span>
+                    <span> - </span>
+                    <span>{match.away_extra_time_score}</span>
+                  </ExtraScoreContainer>
+                  <div>Tiempo extra</div>
+                </ExtraResult>)}
+                {match.matchDefined === MatchDefinedEnum.PENALTIES && (<ExtraResult>
+                  <ExtraScoreContainer>
+                    <span>{match.home_penalties_score}</span>
+                    <span> - </span>
+                    <span>{match.away_penalties_score}</span>
+                  </ExtraScoreContainer>
+                  <div>Penales</div>
+                </ExtraResult>)}
+              </DefinedAfterRegTime>
             <div className="bet-values">Tu apuesta</div>
             <div className="match-bet-container">
               <Field
